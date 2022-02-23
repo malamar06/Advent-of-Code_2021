@@ -1,0 +1,54 @@
+# one line input
+# we have to get the command and after that input lenght
+
+debt_pos = 0
+horizontal_pos = 0
+
+
+def getcommand(thisline):
+    command = ""
+    for i in thisline:
+        if i != " ":
+            command += i
+        else:
+            break
+    if command == "up":
+        return 1
+    if command == "down":
+        return -1
+    if command == "forward":
+        return 0
+
+
+def getnumber(thisline):
+    for i in range(len(thisline)):
+        if thisline[i] == " ":
+            number = thisline[i + 1]
+            final = int(number)
+            return final
+
+
+def move_by_line(commandline):
+    global debt_pos
+    global horizontal_pos
+    where = getcommand(commandline)
+    if where == -1:
+        debt_pos += getnumber(commandline)
+    if where == 1:
+        debt_pos -= getnumber(commandline)
+    if where == 0:
+        horizontal_pos += getnumber(commandline)
+
+
+datafile = open("dummylist.txt", "r")
+datalist = []
+for x in datafile:
+    datalist.append(x)
+
+for i in range(len(datalist)):
+    move_by_line(datalist[i])
+
+print("Horizontal Pos = ", horizontal_pos)
+print("Debt = ", debt_pos)
+result = debt_pos * horizontal_pos
+print("Final result is ", result)
