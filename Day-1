@@ -1,0 +1,17 @@
+database = open("adventcode.txt", "r") # Inputdata is saved on a txt file here
+datalist = []
+increaseCounter = 0
+
+for i in range(2000):
+    thisline = database.readline()
+    firstVar = int(thisline)
+    datalist.append(firstVar)
+
+for i in range(len(datalist) - 1):
+    if datalist[i] < datalist[i + 1]:
+        print("We have found an Increase : ", datalist[i], " -> ", datalist[i + 1])
+        increaseCounter += 1
+    else:
+        print("No Increase : ", datalist[i], " -> ", datalist[i + 1])
+
+print("Increase counter = ", increaseCounter)
