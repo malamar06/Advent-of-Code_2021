@@ -1,0 +1,52 @@
+# day - 3 Advent of code
+# gama rate & epyslon rate
+# gana rate is with most common bits
+# epsylon rate is with least common bits
+
+
+with open("adventcode.txt", 'r') as myfile:
+    datalist = []
+    for x in myfile:
+        datalist.append(x)
+# Datalist is my input array i will work my data on here
+gamma_rate = ""
+epsilon_rate = ""
+
+
+def oneorzeromost(bitpos):
+    zerocount = 0
+    onecount = 0
+    for i in range(len(datalist)):
+        if datalist[i][bitpos] == "0":
+            zerocount += 1
+        if datalist[i][bitpos] == "1":
+            onecount += 1
+    if zerocount > onecount:
+        return 0
+    else:
+        return 1
+
+
+binarynumlenght = len(datalist[0]) - 1  # Because of \n there is a -1
+
+for kekw in range(binarynumlenght):
+    binarynum = oneorzeromost(kekw)
+    if binarynum == 0:
+        gamma_rate += "0"
+        epsilon_rate += "1"
+    if binarynum == 1:
+        gamma_rate += "1"
+        epsilon_rate += "0"
+
+print(gamma_rate)
+print(epsilon_rate)
+
+gamma_rate_int = int(gamma_rate, 2)
+epsilon_rate_int = int(epsilon_rate, 2)
+
+print(gamma_rate_int)
+print(epsilon_rate_int)
+
+answer = gamma_rate_int * epsilon_rate_int
+
+print(answer)
