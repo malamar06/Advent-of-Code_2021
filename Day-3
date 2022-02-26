@@ -50,3 +50,105 @@ print(epsilon_rate_int)
 answer = gamma_rate_int * epsilon_rate_int
 
 print(answer)
+
+*************************************========================================******************==========================
+#########################################################################################################################
+
+# day - 3 part 2 Advent of code
+# gama rate & epyslon rate
+# gana rate is with most common bits
+# epsylon rate is with least common bits
+import copy
+
+with open("adventcode.txt", 'r') as myfile:
+    datalist_orginal = []
+    for x in myfile:
+        datalist_orginal.append(x)
+# Datalist is my input array i will work my data on here
+
+datalist = copy.deepcopy(datalist_orginal)
+
+
+def oneorzeromost(bitpos, thelist):
+    zerocount = 0
+    onecount = 0
+    for i in range(len(thelist)):
+        if thelist[i][bitpos] == "0":
+            zerocount += 1
+        if thelist[i][bitpos] == "1":
+            onecount += 1
+    if zerocount > onecount:
+        return 0
+    else:
+        return 1
+
+
+def oneorzeromost_0(bitpos, thelist):
+    zerocount = 0
+    onecount = 0
+    for i in range(len(thelist)):
+        if thelist[i][bitpos] == "0":
+            zerocount += 1
+        if thelist[i][bitpos] == "1":
+            onecount += 1
+    if zerocount < onecount:
+        return 0
+    if zerocount > onecount:
+        return 1
+    if zerocount == onecount:
+        return 0
+
+
+def onedominantsorting(thelist):
+    cansanakafamgirsin = 0
+    for j in range(0, len(thelist[0]) - 1):
+        popularbit = oneorzeromost(j, thelist)
+        for i in range(len(thelist)):
+            if (thelist[i][j] != str(popularbit)) & (thelist[i][j] != "6"):
+                thelist[i] = "666666666666"
+                cansanakafamgirsin += 1
+            if cansanakafamgirsin >= (len(thelist) - 1):
+                break
+    for i in range(len(thelist)):  # find result
+        if thelist[i][0] != "6":
+            return thelist[i]
+
+
+def zerodominantsorting(thelist):
+    cansanakafamgirsin = 0
+    for j in range(0, len(thelist[0]) - 1):
+        popularbit = oneorzeromost_0(j, thelist)
+        for i in range(len(thelist)):
+            if (thelist[i][j] != str(popularbit)) & (thelist[i][j] != "6"):
+                thelist[i] = "666666666666"
+                cansanakafamgirsin += 1
+            if cansanakafamgirsin >= (len(thelist) - 1):
+                break
+    for i in range(len(thelist)):  # find result
+        if thelist[i][0] != "6":
+            return thelist[i]
+
+
+o2raiting = int(onedominantsorting(datalist), 2)
+datalist = copy.deepcopy(datalist_orginal)
+co2raiting = int(zerodominantsorting(datalist), 2)
+result = co2raiting * o2raiting
+print(result)
+
+# Create a deep copy function
+# Verify the life support rating, which can be determined by multiplying the oxygen generator_
+# _rating by the CO2 scrubber rating.
+
+# Calculate oxygen generator raiting = or
+#   deep copy the list
+#   find the popular bit in first pos ( 1 dominant )
+#   remove every element that does not match in the same pos
+#   repeat until 1 element left
+#   turn the last number into decimal => thats the answer
+
+# Calculate CO2 scrubber raiting = co2r
+#   deep copy the list
+#   find the popular bit in first pos ( 0 dominant )
+#   remove every element that does not match in the same pos
+#   repeat until 1 element left
+#   turn the last number into decimal => thats the answer
