@@ -1,0 +1,122 @@
+# Advent of code Day-4
+import copy
+import time
+
+
+class Bingonumber:
+    # This is a class to store bingo numbers in so they can be marked for drawn number
+    intvalue = -1
+    checked = False
+
+    def __init__(self, intvalueinput):
+        self.intvalue = intvalueinput
+
+
+class Bingocard:
+    # This is a class to store every indivigual bingo card so they are easier to manage and check for win
+    bingocardlist = []
+
+    def __init__(self, filename):  # Constructer
+        with open(filename, "r") as data_file:
+            bingocards_list = []
+            for j in range(100):
+                a_bingo_card = []
+                for i in range(5):
+                    a_bingo_line = []
+                    theline = data_file.readline()  # Reading a line from the file and sorting the numbers in that line
+                    anumber = ""
+                    for x in theline:
+                        if x.isdigit():
+                            anumber += x
+                        if (x == " " or x == '\n') and anumber != "":
+                            new_var = Bingonumber(int(anumber))
+                            a_bingo_line.append(new_var)
+                            anumber = ""
+                    a_bingo_card.append(copy.deepcopy(a_bingo_line))
+                    a_bingo_line.clear()
+                data_file.readline()
+                bingocards_list.append(copy.deepcopy(a_bingo_card))
+                a_bingo_card.clear()
+        self.bingocardlist = bingocards_list
+
+    def drawthisnumber(self, drawn_number):
+        checkcounter = 0
+        for i in self.bingocardlist: # 100 iteration between cards
+            for j in i:  # 5 iterations between lines
+                for k in j:  # 5 iterations between bingo_number in a line
+                    if k.intvalue == drawn_number:
+                        k.checked = True
+                        checkcounter += 1
+        print("Check counter for number ", drawn_number, " is ", checkcounter, ".")
+
+    def run_bingo_check(self):
+        for a_card in self.bingocardlist:  # Drawing a card from the bingo cards list and checking further
+            for a_line in a_card:  # Drawing a line from a bingo card
+                markedcounter = 0
+                for a_number in a_line:  # Checking numbers in a line
+                    if a_number.checked:
+                        markedcounter += 1
+                if markedcounter == 5:
+                    print("BINGO!!!")
+                    self.printthiscard(a_card)
+                    print("Summ of unmarked in this card : ", self.sumofallunmarkednumbers(a_card))
+                    return True
+            # Here has to be a diagonal check
+            diagonal_card = []
+            for x in range(len(a_card)):
+                diagonal_line = []
+                for y in range(len(a_card)):
+                    diagonal_line.append(a_card[y][x])
+                diagonal_card.append(copy.deepcopy(diagonal_line))
+                diagonal_line.clear()
+
+            for a_d_line in diagonal_card:
+                markedcounter = 0
+                for a_number in a_d_line:  # Checking numbers in a line
+                    if a_number.checked:
+                        markedcounter += 1
+                if markedcounter == 5:
+                    print("BINGO!!!")
+                    self.printthiscard(a_card)
+                    print("Summ of unmarked in this card : ", self.sumofallunmarkednumbers(a_card))
+                    return True
+            diagonal_card.clear()
+
+    def printthiscard(self, a_card):
+        for aline in a_card:
+            for anumber in aline:
+                if anumber.checked:
+                    print("*", end="")
+                print(anumber.intvalue, end=" ")
+            print()
+
+    def sumofallunmarkednumbers(self, a_card):
+        summ = 0
+        for a_line in a_card:
+            for a_number in a_line:
+                if not a_number.checked:
+                    summ += a_number.intvalue
+        return summ
+
+
+def get_tobedrawnnumbers(filename):
+    numberslist = []
+    with open(filename, "r") as numbersfile:
+        listarray = numbersfile.read()
+        buffer = ""
+        for this in listarray:
+            if this.isdigit():
+                buffer += this
+            if this == ',':
+                numberslist.append(int(buffer))
+                buffer = ""
+    return numberslist
+
+
+luckynumbers = get_tobedrawnnumbers("adventcode_numbers.txt")
+bingo_table = Bingocard("adventcode.txt")
+
+for hotnumber in luckynumbers:
+    bingo_table.drawthisnumber(hotnumber)
+    if bingo_table.run_bingo_check():
+        break
