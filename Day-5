@@ -1,0 +1,150 @@
+# Advent of code --- Day 5: Hydrothermal Venture ---
+# My map matrix is going to be an intiger array.
+# Intiger value in a cooardinate will be the cloud level in that area
+import copy
+cloud_map = []
+hydroburstcounter = 0
+mapline = [0]*1000
+for i in range(1000):
+    cloud_map.append(copy.deepcopy(mapline))
+
+
+def read_radar(filename):  # input format (232,829 -> 232,63)
+    radarinfo = []
+    with open(filename, "r") as userinput:
+        for aline in userinput:
+            radarinfo.append(aline)
+    return radarinfo
+
+
+radar_info = read_radar("adventcode.txt ")
+
+
+def print_this_map(themap):  # Better Not Use
+    print("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-")
+    for line in themap:
+        for position in line:
+            print(position, end=" ")
+        print()
+    print("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-")
+
+
+def get_coordinates(stringline):  # input format : x1,y1 -> x2,y2
+    x1 = -1
+    x2 = -1
+    y1 = -1
+    y2 = -1
+    buffer = ""
+    savingpos = 0
+    for i in stringline:
+        if savingpos == 0 and i == ",":
+            x1 = int(buffer)
+            buffer = ""
+            savingpos = 1
+        if savingpos == 1 and i == " ":
+            y1 = int(buffer)
+            buffer = ""
+            savingpos = 2
+        if savingpos == 2 and (i == "-" or i == ">" or i == " "):
+            continue
+        if savingpos == 2 and i == ",":
+            x2 = int(buffer)
+            buffer = ""
+            savingpos = 3
+        if savingpos == 3 and i == "\n":
+            y2 = int(buffer)
+            buffer = ""
+        if i.isdigit():
+            buffer += i
+    returndata = [x1, y1, x2, y2]
+    return returndata
+
+
+def ask_slope(x1, y1, x2, y2):
+    if x2 - x1 == 0:
+        return -6
+    else:
+        m = (y2 - y1) / (x2 - x1)
+        return m
+
+
+def run_event(iterationnumber):
+    for h in range(iterationnumber):
+        coordinates = get_coordinates(radar_info[h])
+        slope = ask_slope(coordinates[0], coordinates[1], coordinates[2], coordinates[3])
+        x1 = coordinates[0]
+        y1 = coordinates[1]
+        x2 = coordinates[2]
+        y2 = coordinates[3]
+        # m values 0 -> y1 = y2 vertical line, 1 -> diagonal, -1 -> diagonal, -6 x1 = x2 horizontal
+        if slope == 0:  # 0 -> y1 = y2 vertical line
+            if x1 > x2:
+                for j in range(x1 - x2 + 1):
+                    cloud_map[x2 + j][y2] += 1
+                print("Coordinates marked Horizontal: ", x1, ",", y1, " - ", x2, ",", y2)
+                continue
+            else:
+                for j in range(x2 - x1 + 1):
+                    cloud_map[x1 + j][y1] += 1
+                print("Coordinates marked Horizontal: ", x1, ",", y1, " - ", x2, ",", y2)
+                continue
+        elif slope == -6:
+            if y1 > y2:
+                for j in range(y1 - y2 + 1):
+                    cloud_map[x2][y2 + j] += 1
+                print("Coordinates marked Vertical: ", x1, ",", y1, " - ", x2, ",", y2)
+                continue
+
+            else:
+                for j in range(y2 - y1 + 1):
+                    cloud_map[x1][y1 + j] += 1
+                print("Coordinates marked Vertical: ", x1, ",", y1, " - ", x2, ",", y2)
+                continue
+        elif slope == 1:
+            if x1 < x2:
+                for j in range(x2 - x1 + 1):
+                    cloud_map[x1 + j][y1 + j] += 1
+                print("Coordinates marked Diagonal m = 1: ", x1, ",", y1, " - ", x2, ",", y2)
+                continue
+            else:
+                for j in range(x1 - x2 + 1):
+                    cloud_map[x2 + j][y2 + j] += 1
+                print("Coordinates marked Diagonal m = 1: ", x1, ",", y1, " - ", x2, ",", y2)
+                continue
+        elif slope == -1:
+            if x1 < x2:
+                for j in range(x2 - x1 + 1):
+                    cloud_map[x2 - j][y2 + j] += 1
+                print("Coordinates marked Diagonal m = -1: ", x1, ",", y1, " - ", x2, ",", y2)
+                continue
+            else:
+                for j in range(x1 - x2 + 1):
+                    cloud_map[x1 - j][y1 + j] += 1
+                print("Coordinates marked Diagonal m = -1: ", x1, ",", y1, " - ", x2, ",", y2)
+                continue
+        else:
+            print("ERROR ERROR ERROR Coordinates ", x1, ",", y1, " - ", x2, ",", y2)
+
+
+def run_danger_check(themap):
+    danger_zone_counter = 0
+    safe_zone_counter = 0
+    highest = 0
+    for line in themap:
+        for area in line:
+            if area > highest:
+                highest = area
+            if area > 1:
+                danger_zone_counter += 1
+            if area <= 1:
+                safe_zone_counter += 1
+            if area < 0:
+                print("Error in danger check: ", area, line)
+    print("Danger Zone Count: ", danger_zone_counter)
+    print("Safe Zone Counter: ", safe_zone_counter)
+    print("Highest: ", highest)
+
+
+# Input formamt : 644,38 -> 644,265
+run_event(500)
+run_danger_check(cloud_map)
