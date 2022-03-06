@@ -1,0 +1,88 @@
+class FishPond:
+    zerodaygroup = 0
+    onedaygroup = 0
+    twodaygroup = 0
+    threedaygroup = 0
+    fourdaygroup = 0
+    fivedaygroup = 0
+    sixdaygroup = 0
+    sevendaygroup = 0
+    eightdaygroup = 0
+
+    def day_cycle(self):
+        newborn = self.zerodaygroup
+        self.zerodaygroup = 0
+        self.zerodaygroup += self.onedaygroup
+        self.onedaygroup = 0
+        self.onedaygroup += self.twodaygroup
+        self.twodaygroup = 0
+        self.twodaygroup += self.threedaygroup
+        self.threedaygroup = 0
+        self.threedaygroup += self.fourdaygroup
+        self.fourdaygroup = 0
+        self.fourdaygroup += self.fivedaygroup
+        self.fivedaygroup = 0
+        self.fivedaygroup += self.sixdaygroup
+        self.sixdaygroup = 0
+        self.sixdaygroup += self.sevendaygroup
+        self.sevendaygroup = 0
+        self.sevendaygroup += self.eightdaygroup
+        self.eightdaygroup = 0
+        self.eightdaygroup += newborn
+        self.sixdaygroup += newborn
+        newborn = 0
+
+    def add_fish(self, day=0):
+        if day == 0:
+            self.zerodaygroup += 1
+        elif day == 1:
+            self.onedaygroup += 1
+        elif day == 2:
+            self.twodaygroup += 1
+        elif day == 3:
+            self.threedaygroup += 1
+        elif day == 4:
+            self.fourdaygroup += 1
+        elif day == 5:
+            self.fivedaygroup += 1
+        elif day == 6:
+            self.sixdaygroup += 1
+        else:
+            print("Wrong Fish input add_fish() function")
+            breakpoint()
+            return
+
+    def print_pond(self):
+        print("zerodaygroup", self.zerodaygroup)
+        print("onedaygroup", self.onedaygroup)
+        print("twodaygroup", self.twodaygroup)
+        print("threedaygroup", self.threedaygroup)
+        print("fourdaygroup", self.fourdaygroup)
+        print("fivedaygroup", self.fivedaygroup)
+        print("sixdaygroup", self.sixdaygroup)
+        print("sevendaygroup", self.sevendaygroup)
+        print("eightdaygroup", self.eightdaygroup)
+        total_fish_count = self.zerodaygroup + self.onedaygroup + self.twodaygroup + self.threedaygroup +self.fourdaygroup + self.fivedaygroup + self.sixdaygroup + self.sevendaygroup + self.eightdaygroup
+        print("Fish Count : ", total_fish_count)
+        print()
+
+
+myfishpond = FishPond()
+with open("adventcode.txt", "r") as datainput:
+    data = datainput.read()
+    for batman in data:
+        if batman.isdigit():
+            myfishpond.add_fish(int(batman))
+
+
+# myfishpond.add_fish(3)
+# myfishpond.add_fish(4)
+# myfishpond.add_fish(3)
+# myfishpond.add_fish(1)
+# myfishpond.add_fish(2)
+for i in range(256):
+    myfishpond.day_cycle()
+    myfishpond.print_pond()
+
+
+
