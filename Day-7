@@ -1,0 +1,51 @@
+userinput = []
+
+with open("adventcode.txt", "r") as datainput:
+    data = datainput.read()
+    buffer = ""
+    for x in data:
+        if x.isdigit():
+            buffer += x
+        if x == ',':
+            userinput.append(int(buffer))
+            buffer = ""
+
+
+def hard_calculate(pos_cap):  # part 1 function
+    proccessdata = []
+    lowest = 1500000000000
+    lowest_pos = 0
+    for i in range(pos_cap):  # Checking all positions for best position
+        gas_need = 0
+        for h in userinput:  # moving all crabs to the position(i) to calculate gas need for this move
+            gas_need += abs(h - i)
+        buffer_1 = [gas_need, i]
+        if gas_need < lowest:
+            lowest = gas_need
+            lowest_pos = i
+        print("Gas needed for moving all to position ", i, "is : ", gas_need)
+        proccessdata.append(buffer_1)
+    print(proccessdata)
+    print(lowest_pos, " , ", lowest)
+
+
+def harder_calculate(pos_cap):  # Part 2 Function
+    proccessdata = []
+    lowest = 1500000000000
+    lowest_pos = 0
+    for i in range(pos_cap):  # Checking all positions for best position
+        gas_need = 0
+        for h in userinput:  # moving all crabs to the position(i) to calculate gas need for this move
+            n = abs(h - i)  # n as in summ operation
+            gas_need += (n * (n + 1)) / 2  # This is basic SUMM operation from 1 to n
+        buffer_1 = [gas_need, i]
+        if gas_need < lowest:
+            lowest = gas_need
+            lowest_pos = i
+        print("Gas needed for moving all to position ", i, "is : ", gas_need)
+        proccessdata.append(buffer_1)
+    print(proccessdata)
+    print(lowest_pos, " , ", lowest)
+
+
+harder_calculate(len(userinput))
